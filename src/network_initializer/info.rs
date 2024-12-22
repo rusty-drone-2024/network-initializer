@@ -90,7 +90,7 @@ fn filter_hashmap_sender(
     let mut res = HashMap::new();
 
     for k in filter {
-        res.insert(k.clone(), all[&k].0.clone());
+        res.insert(*k, all[k].0.clone());
     }
 
     res
