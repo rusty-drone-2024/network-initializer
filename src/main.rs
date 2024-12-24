@@ -1,24 +1,10 @@
-mod tester1;
-mod tester3;
-mod tester2;
+mod drone_test;
+mod network_initializer;
 
-use rusty_drones::RustyDrone;
-use getdroned::GetDroned;
-use wg_2024::drone::Drone;
-use rolling_drone::RollingDrone;
+use crate::network_initializer::load_from_file;
+use crate::network_initializer::network::Network;
 
 fn main() {
-    get(0);
-    get(1);
-
-}
-
-fn get(a: i32){
-    if a > 0 {
-        GetDroned::new(todo!(),todo!(), todo!(),todo!(), todo!(), todo!());
-    }else if a == 0 {
-        RustyDrone::new(todo!(),todo!(),todo!(),todo!(),todo!(),todo!());
-    } else {
-        RollingDrone::new(todo!(),todo!(),todo!(),todo!(),todo!(),todo!());
-    }
+    let config = load_from_file("./config.toml");
+    let _network = Network::start_simulation_from_config(config);
 }
