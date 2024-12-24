@@ -1,9 +1,10 @@
+use crate::network_initializer::factory::{DroneFactory, LeafFactory};
+use crate::structs::leaf::{LeafCommand, LeafPacketSentEvent};
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use std::collections::{HashMap, HashSet};
 use std::thread;
 use wg_2024::config;
 use wg_2024::controller::{DroneCommand, DroneEvent};
-use wg_2024::drone::Drone;
 use wg_2024::network::NodeId;
 use wg_2024::packet::Packet;
 
@@ -25,12 +26,11 @@ pub enum TypeInfo {
 pub struct DroneInfo {
     pdr: f32,
     command_send_channel: Sender<DroneCommand>,
-    //event_listener_channel: Receiver<DroneEvent>, TODO make 1 global
 }
 
+#[allow(dead_code)]
 pub struct LeafInfo {
-    //event_listener_channel: Receiver<DroneEvent>, TODO create type
-    //command_send_channel: Sender<DroneCommand>, TODO create type
+    command_send_channel: Sender<LeafCommand>,
 }
 
 impl NodeInfo {
@@ -46,8 +46,9 @@ impl NodeInfo {
         }
     }
 
-    pub fn new_drone<T: Drone>(
-        data: config::Drone,
+    pub fn new_drone(
+        data: &config::Drone,
+        factory: &DroneFactory,
         all_packet_channels: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
         event_send: Sender<DroneEvent>,
     ) -> Self {
@@ -55,31 +56,66 @@ impl NodeInfo {
         let packet_send = filter_hashmap_sender(all_packet_channels, &data.connected_node_ids);
         let (packet_in, packet_rcv) = all_packet_channels[&data.id].clone();
 
-        thread::spawn(move || {
-            T::new(
-                data.id,
-                event_send,
-                command_rcv,
-                packet_rcv,
-                packet_send,
-                data.pdr,
-            )
-            .run();
-        });
+        let mut drone = factory(
+            data.id,
+            event_send,
+            command_rcv,
+            packet_rcv,
+            packet_send,
+            data.pdr,
+        );
+
+        thread::spawn(move || drone.run());
 
         let type_info = TypeInfo::Drone(DroneInfo {
             pdr: data.pdr,
             command_send_channel: command_send,
         });
-        NodeInfo::new(data.connected_node_ids, type_info, packet_in)
+        NodeInfo::new(data.connected_node_ids.clone(), type_info, packet_in)
     }
 
-    pub fn new_client(_data: config::Client) -> Self {
-        todo!()
+    pub fn new_client(
+        data: &config::Client,
+        factory: &LeafFactory,
+        all_packet_channels: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
+        event_send: Sender<LeafPacketSentEvent>,
+    ) -> Self {
+        let (command_send, command_rcv) = unbounded();
+        let packet_send = filter_hashmap_sender(all_packet_channels, &data.connected_drone_ids);
+        let (packet_in, packet_rcv) = all_packet_channels[&data.id].clone();
+
+        let mut leaf = factory(data.id, event_send, command_rcv, packet_rcv, packet_send);
+
+        thread::spawn(move || {
+            leaf.run();
+        });
+
+        let type_info = TypeInfo::Client(LeafInfo {
+            command_send_channel: command_send,
+        });
+        NodeInfo::new(data.connected_drone_ids.clone(), type_info, packet_in)
     }
 
-    pub fn new_server(_data: config::Server) -> Self {
-        todo!()
+    pub fn new_server(
+        data: &config::Server,
+        factory: &LeafFactory,
+        all_packet_channels: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
+        event_send: Sender<LeafPacketSentEvent>,
+    ) -> Self {
+        let (command_send, command_rcv) = unbounded();
+        let packet_send = filter_hashmap_sender(all_packet_channels, &data.connected_drone_ids);
+        let (packet_in, packet_rcv) = all_packet_channels[&data.id].clone();
+
+        let mut leaf = factory(data.id, event_send, command_rcv, packet_rcv, packet_send);
+
+        thread::spawn(move || {
+            leaf.run();
+        });
+
+        let type_info = TypeInfo::Server(LeafInfo {
+            command_send_channel: command_send,
+        });
+        NodeInfo::new(data.connected_drone_ids.clone(), type_info, packet_in)
     }
 }
 

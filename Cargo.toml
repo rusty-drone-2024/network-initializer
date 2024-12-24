@@ -5,7 +5,8 @@ edition = "2021"
 
 [dependencies]
 rusty_drones = { git = "https://github.com/matteo-dinoia/rusty-drones.git", branch = "main" }
-wg_2024 = { git = "https://github.com/WGL-2024/WGL_repo_2024.git", features = ["serialize"]}
+#wg_2024 = { git = "https://github.com/WGL-2024/WGL_repo_2024.git", features = ["serialize"]}
+wg_2024 = { git = "https://github.com/ZGako/WGL_repo_2024/", branch = "trait-object-compatibility", features = ["serialize"]}
 
 
 crossbeam-channel = ">=0.5.13"

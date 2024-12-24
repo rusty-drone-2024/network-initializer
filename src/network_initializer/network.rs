@@ -1,9 +1,17 @@
+use crate::network_initializer::factory::DroneFactory;
+use crate::network_initializer::factory::DroneRunnable;
+use crate::network_initializer::factory::LeafFactory;
+use crate::network_initializer::factory::LeafRunnable;
 use crate::network_initializer::info::NodeInfo;
+use crate::structs::dummy::{DummyDrone, DummyLeaf};
+use crate::structs::leaf::Leaf;
+use crate::structs::leaf::LeafPacketSentEvent;
+use crate::{drone_factories, leaf_factories};
 use crossbeam_channel::{unbounded, Receiver, Sender};
-use rusty_drones::RustyDrone;
 use std::collections::HashMap;
 use wg_2024::config::Config;
 use wg_2024::controller::DroneEvent;
+use wg_2024::drone::Drone;
 use wg_2024::network::NodeId;
 use wg_2024::packet::Packet;
 
@@ -15,8 +23,10 @@ pub struct Network {
 
 #[allow(dead_code)]
 pub struct SimulationChannels {
-    sc_event_listener: Receiver<DroneEvent>,
-    sc_event_sender: Sender<DroneEvent>,
+    drone_event_listener: Receiver<DroneEvent>,
+    drone_event_sender: Sender<DroneEvent>,
+    leaf_event_listener: Receiver<LeafPacketSentEvent>,
+    leaf_event_sender: Sender<LeafPacketSentEvent>,
 }
 
 impl Network {
@@ -26,34 +36,57 @@ impl Network {
 
     fn new(config: Config) -> Self {
         let mut topology = HashMap::new();
-        let (sc_event_sender, sc_event_listener) = unbounded();
+        let (drone_event_sender, drone_event_listener) = unbounded();
+        let (leaf_event_sender, leaf_event_listener) = unbounded();
         let all_packet_channels = create_packet_channels(&config);
-        //TODO various impl for all
 
-        for node in config.drone {
+        let drone_factories = drone_factories!(DummyDrone, DummyDrone);
+        let client_factories = leaf_factories!(DummyLeaf, DummyLeaf);
+        let server_factories = leaf_factories!(DummyLeaf, DummyLeaf);
+
+        for (i, node) in config.drone.iter().enumerate() {
             topology.insert(
                 node.id,
-                NodeInfo::new_drone::<RustyDrone>(
+                NodeInfo::new_drone(
                     node,
+                    &drone_factories[i % drone_factories.len()],
                     &all_packet_channels,
-                    sc_event_sender.clone(),
+                    drone_event_sender.clone(),
                 ),
             );
         }
 
-        for node in config.server {
-            topology.insert(node.id, NodeInfo::new_server(node));
+        for (i, node) in config.server.iter().enumerate() {
+            topology.insert(
+                node.id,
+                NodeInfo::new_server(
+                    node,
+                    &server_factories[i % drone_factories.len()],
+                    &all_packet_channels,
+                    leaf_event_sender.clone(),
+                ),
+            );
         }
 
-        for node in config.client {
-            topology.insert(node.id, NodeInfo::new_client(node));
+        for (i, node) in config.client.iter().enumerate() {
+            topology.insert(
+                node.id,
+                NodeInfo::new_client(
+                    node,
+                    &client_factories[i % drone_factories.len()],
+                    &all_packet_channels,
+                    leaf_event_sender.clone(),
+                ),
+            );
         }
 
         Self {
             topology,
             simulation_channels: SimulationChannels {
-                sc_event_listener,
-                sc_event_sender,
+                drone_event_listener,
+                drone_event_sender,
+                leaf_event_listener,
+                leaf_event_sender,
             },
         }
     }

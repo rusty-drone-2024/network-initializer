@@ -1,3 +1,4 @@
+mod factory;
 mod info;
 pub mod network;
 mod parser;
