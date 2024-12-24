@@ -8,4 +8,5 @@ use crate::network_initializer::network::Network;
 fn main() {
     let config = load_from_file("./config.toml");
     let _network = Network::start_simulation_from_config(config);
+    // RustySimulationController::start(_network);
 }

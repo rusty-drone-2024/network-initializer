@@ -17,16 +17,16 @@ use wg_2024::packet::Packet;
 
 #[allow(dead_code)]
 pub struct Network {
-    topology: HashMap<NodeId, NodeInfo>,
-    simulation_channels: SimulationChannels,
+    pub topology: HashMap<NodeId, NodeInfo>,
+    pub simulation_channels: SimulationChannels,
 }
 
 #[allow(dead_code)]
 pub struct SimulationChannels {
-    drone_event_listener: Receiver<DroneEvent>,
-    drone_event_sender: Sender<DroneEvent>,
-    leaf_event_listener: Receiver<LeafPacketSentEvent>,
-    leaf_event_sender: Sender<LeafPacketSentEvent>,
+    pub drone_event_listener: Receiver<DroneEvent>,
+    pub drone_event_sender: Sender<DroneEvent>,
+    pub leaf_event_listener: Receiver<LeafPacketSentEvent>,
+    pub leaf_event_sender: Sender<LeafPacketSentEvent>,
 }
 
 impl Network {
