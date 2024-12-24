@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-rusty_drones = { git = "https://github.com/matteo-dinoia/rusty-drones.git", branch = "main" }
+rusty_drones = { git = "https://github.com/rusty-drone-2024/rusty-drone.git", branch = "main" }
 #wg_2024 = { git = "https://github.com/WGL-2024/WGL_repo_2024.git", features = ["serialize"]}
 wg_2024 = { git = "https://github.com/ZGako/WGL_repo_2024/", branch = "trait-object-compatibility", features = ["serialize"]}
 
@@ -25,4 +25,4 @@ toml = "0.8.19"
 #rustbusters-drone = { git = "https://github.com/Rustbusters/drone.git" }
 
 [dev-dependencies]
-# rusty_tester = { git = "https://github.com/matteo-dinoia/rusty_tester.git", branch = "main" }
+# rusty_tester = { git = "https://github.com/rusty-drone-2024/rusty-tester.git", branch = "main" }
