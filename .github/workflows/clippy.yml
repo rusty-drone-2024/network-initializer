@@ -1,13 +1,27 @@
 name: Clippy
-on: [pull_request]
+
+on:
+  pull_request:
 
 jobs:
   clippy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: dtolnay/rust-toolchain@stable
+    - name: Checkout Main Repository
+      uses: actions/checkout@v4
+
+    - name: Configure SSH for Private Repositories
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SECRET }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+    - name: Set up Rust and Clippy
+      uses: dtolnay/rust-toolchain@stable
       with:
         components: clippy
-    - run: cargo clippy -- -Dwarnings
+
+    - name: Run Clippy
+      run: cargo clippy -- -D warnings
