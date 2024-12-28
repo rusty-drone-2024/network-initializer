@@ -11,4 +11,5 @@ jobs:
       with:
         components: clippy
     - run: cargo clippy -- -Dwarnings
-      token: ${{ secrets.MATTEO_ACCESS_TOKEN }}
+      with:
+        token: ${{ secrets.MATTEO_ACCESS_TOKEN }}
