@@ -1,45 +1,20 @@
-use crate::network_initializer::factory::{DroneFactory, LeafFactory};
-use crate::structs::leaf::{LeafCommand, LeafPacketSentEvent};
+use crate::utils::factory::{DroneEvent, DroneFactory, LeafFactory, NodeId, Packet};
+use common_structs::leaf::LeafPacketSentEvent;
+use common_structs::network::{DroneInfo, LeafInfo, NodeInfo, TypeInfo};
 use crossbeam_channel::{unbounded, Receiver, Sender};
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::thread;
 use wg_2024::config;
-use wg_2024::controller::{DroneCommand, DroneEvent};
-use wg_2024::network::NodeId;
-use wg_2024::packet::Packet;
 
-#[allow(dead_code)]
-pub struct NodeInfo {
-    neighbours: HashSet<NodeId>,
-    packet_in_channel: Sender<Packet>,
-    type_info: TypeInfo,
-}
+pub struct Creator {}
 
-#[allow(dead_code)]
-pub enum TypeInfo {
-    Client(LeafInfo),
-    Server(LeafInfo),
-    Drone(DroneInfo),
-}
-
-#[allow(dead_code)]
-pub struct DroneInfo {
-    pdr: f32,
-    command_send_channel: Sender<DroneCommand>,
-}
-
-#[allow(dead_code)]
-pub struct LeafInfo {
-    command_send_channel: Sender<LeafCommand>,
-}
-
-impl NodeInfo {
-    fn new(
+impl Creator {
+    fn new_info(
         neighbours: Vec<NodeId>,
         type_info: TypeInfo,
         packet_in_channel: Sender<Packet>,
-    ) -> Self {
-        Self {
+    ) -> NodeInfo {
+        NodeInfo {
             neighbours: neighbours.into_iter().collect(),
             packet_in_channel,
             type_info,
@@ -51,7 +26,7 @@ impl NodeInfo {
         factory: &DroneFactory,
         all_packet_channels: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
         event_send: Sender<DroneEvent>,
-    ) -> Self {
+    ) -> NodeInfo {
         let (command_send, command_rcv) = unbounded();
         let packet_send = filter_hashmap_sender(all_packet_channels, &data.connected_node_ids);
         let (packet_in, packet_rcv) = all_packet_channels[&data.id].clone();
@@ -71,7 +46,7 @@ impl NodeInfo {
             pdr: data.pdr,
             command_send_channel: command_send,
         });
-        NodeInfo::new(data.connected_node_ids.clone(), type_info, packet_in)
+        Creator::new_info(data.connected_node_ids.clone(), type_info, packet_in)
     }
 
     pub fn new_client(
@@ -79,7 +54,7 @@ impl NodeInfo {
         factory: &LeafFactory,
         all_packet_channels: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
         event_send: Sender<LeafPacketSentEvent>,
-    ) -> Self {
+    ) -> NodeInfo {
         let (command_send, command_rcv) = unbounded();
         let packet_send = filter_hashmap_sender(all_packet_channels, &data.connected_drone_ids);
         let (packet_in, packet_rcv) = all_packet_channels[&data.id].clone();
@@ -93,7 +68,7 @@ impl NodeInfo {
         let type_info = TypeInfo::Client(LeafInfo {
             command_send_channel: command_send,
         });
-        NodeInfo::new(data.connected_drone_ids.clone(), type_info, packet_in)
+        Creator::new_info(data.connected_drone_ids.clone(), type_info, packet_in)
     }
 
     pub fn new_server(
@@ -101,7 +76,7 @@ impl NodeInfo {
         factory: &LeafFactory,
         all_packet_channels: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
         event_send: Sender<LeafPacketSentEvent>,
-    ) -> Self {
+    ) -> NodeInfo {
         let (command_send, command_rcv) = unbounded();
         let packet_send = filter_hashmap_sender(all_packet_channels, &data.connected_drone_ids);
         let (packet_in, packet_rcv) = all_packet_channels[&data.id].clone();
@@ -115,7 +90,7 @@ impl NodeInfo {
         let type_info = TypeInfo::Server(LeafInfo {
             command_send_channel: command_send,
         });
-        NodeInfo::new(data.connected_drone_ids.clone(), type_info, packet_in)
+        Creator::new_info(data.connected_drone_ids.clone(), type_info, packet_in)
     }
 }
 
