@@ -9,7 +9,7 @@ use wg_2024::config;
 pub struct Creator {}
 
 impl Creator {
-    fn new(
+    fn new_info(
         neighbours: Vec<NodeId>,
         type_info: TypeInfo,
         packet_in_channel: Sender<Packet>,
@@ -46,7 +46,7 @@ impl Creator {
             pdr: data.pdr,
             command_send_channel: command_send,
         });
-        Creator::new(data.connected_node_ids.clone(), type_info, packet_in)
+        Creator::new_info(data.connected_node_ids.clone(), type_info, packet_in)
     }
 
     pub fn new_client(
@@ -68,7 +68,7 @@ impl Creator {
         let type_info = TypeInfo::Client(LeafInfo {
             command_send_channel: command_send,
         });
-        Creator::new(data.connected_drone_ids.clone(), type_info, packet_in)
+        Creator::new_info(data.connected_drone_ids.clone(), type_info, packet_in)
     }
 
     pub fn new_server(
@@ -90,7 +90,7 @@ impl Creator {
         let type_info = TypeInfo::Server(LeafInfo {
             command_send_channel: command_send,
         });
-        Creator::new(data.connected_drone_ids.clone(), type_info, packet_in)
+        Creator::new_info(data.connected_drone_ids.clone(), type_info, packet_in)
     }
 }
 
