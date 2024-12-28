@@ -1,11 +1,6 @@
-use crate::structs::dummy::{DummyDrone, DummyLeaf};
-use crate::structs::leaf::Leaf;
-use crate::structs::leaf::LeafCommand;
-use crate::structs::leaf::LeafPacketSentEvent;
-use crossbeam_channel::unbounded;
+use common_structs::leaf::{Leaf, LeafCommand, LeafPacketSentEvent};
 pub use crossbeam_channel::{Receiver, Sender};
 pub use std::collections::HashMap;
-use std::thread;
 pub use wg_2024::controller::{DroneCommand, DroneEvent};
 use wg_2024::drone::Drone;
 pub use wg_2024::network::NodeId;
@@ -66,43 +61,4 @@ macro_rules! leaf_factories {
             ),*
         ]
     }};
-}
-
-pub fn _example_drone() {
-    let factories = drone_factories!(DummyDrone, DummyDrone);
-    let mut join_handles = Vec::new();
-    for (i, factory) in factories.iter().enumerate() {
-        let mut drone = factory(
-            i as NodeId,
-            unbounded().0,
-            unbounded().1,
-            unbounded().1,
-            HashMap::new(),
-            0.0,
-        );
-        let handle = thread::spawn(move || drone.run());
-        join_handles.push(handle);
-    }
-    for handle in join_handles.into_iter() {
-        handle.join().unwrap();
-    }
-}
-
-pub fn _example_leaf() {
-    let factories = leaf_factories!(DummyLeaf, DummyLeaf);
-    let mut join_handles = Vec::new();
-    for (i, factory) in factories.iter().enumerate() {
-        let mut drone = factory(
-            i as NodeId,
-            unbounded().0,
-            unbounded().1,
-            unbounded().1,
-            HashMap::new(),
-        );
-        let handle = thread::spawn(move || drone.run());
-        join_handles.push(handle);
-    }
-    for handle in join_handles.into_iter() {
-        handle.join().unwrap();
-    }
 }

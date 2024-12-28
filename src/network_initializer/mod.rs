@@ -1,6 +1,5 @@
-mod factory;
-mod info;
-pub mod network;
+mod network;
 mod parser;
 
+pub use network::NetworkInitializer;
 pub use parser::load_from_file;

@@ -1,4 +1,4 @@
-use crate::structs::leaf::{Leaf, LeafCommand, LeafPacketSentEvent};
+use common_structs::leaf::{Leaf, LeafCommand, LeafPacketSentEvent};
 use crossbeam_channel::{Receiver, Sender};
 use std::collections::HashMap;
 use wg_2024::controller::{DroneCommand, DroneEvent};
