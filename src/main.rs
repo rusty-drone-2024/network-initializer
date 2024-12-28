@@ -6,6 +6,7 @@ use crate::network_initializer::{load_from_file, NetworkInitializer};
 use crate::utils::dummy::{DummyDrone, DummyLeaf};
 use crate::utils::factory::*;
 use common_structs::leaf::Leaf;
+use simulation_controller::RustySC;
 use wg_2024::drone::Drone;
 
 fn main() {
@@ -20,5 +21,6 @@ fn main() {
         client_factories,
         server_factories,
     );
-    // RustySimulationController::start(_network);
+
+    RustySC::start(_network);
 }
