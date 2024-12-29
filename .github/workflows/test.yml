@@ -1,5 +1,4 @@
 name: CargoTest
-
 on: [pull_request]
 
 jobs:
@@ -7,18 +6,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Main Repository
-        uses: actions/checkout@v4
-
-      - name: Configure SSH for Private Repositories
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SECRET }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-
-      - name: Set up Rust Toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Run Cargo Tests
-        run: cargo test src/ --no-fail-fast --color always
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test src/ --no-fail-fast --color always
