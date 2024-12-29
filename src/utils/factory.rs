@@ -7,8 +7,8 @@ pub use wg_2024::network::NodeId;
 pub use wg_2024::packet::Packet;
 
 #[allow(dead_code)]
-pub trait DroneRunnable: Drone + Send {}
-impl<T: Drone + Send> DroneRunnable for T {}
+pub trait DroneRunnable: Drone {}
+impl<T: Drone> DroneRunnable for T {}
 pub type DroneFactory = Box<
     dyn Fn(
         NodeId,
@@ -21,8 +21,8 @@ pub type DroneFactory = Box<
 >;
 
 #[allow(dead_code)]
-pub trait LeafRunnable: Leaf + Send {}
-impl<T: Leaf + Send> LeafRunnable for T {}
+pub trait LeafRunnable: Leaf {}
+impl<T: Leaf> LeafRunnable for T {}
 pub type LeafFactory = Box<
     dyn Fn(
         NodeId,
