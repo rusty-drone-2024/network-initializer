@@ -2,7 +2,7 @@
 use crate::drone_test::{FLOOD_TIMEOUT, HARD_TEST_TIMEOUT, TIMEOUT};
 use rusty_tester::*;
 
-type Tested = rustbusters_drone::RustBustersDrone;
+type Tested = drone::RustBustersDrone;
 
 #[test]
 fn drone_destination_is_drone() {

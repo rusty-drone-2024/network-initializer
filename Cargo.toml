@@ -20,7 +20,8 @@ lockheedrustin-drone = { git = "https://github.com/Lockheed-Rustin/drone.git" }
 LeDron_James = { git = "https://github.com/anass03/LeDron_James.git" }
 bagel_bomber = { git = "https://github.com/daw-dev/bagel-bomber.git", default-features = false}
 wg_2024-rust = { git = "https://github.com/LuigiMiazzo17/unitn-advancedProgramming-WGL_2024-drone.git" }
-rustbusters-drone = { git = "https://github.com/Rustbusters/drone.git" }
+drone = { git = "https://github.com/Rustbusters/drone.git" }
 
 [dev-dependencies]
-rusty_tester = { git = "https://github.com/rusty-drone-2024/rusty-tester.git", branch = "main" }
+# rusty_tester = { git = "https://github.com/rusty-drone-2024/rusty-tester.git", branch = "main" }
+rusty_tester = { path = "../rusty-tester"}

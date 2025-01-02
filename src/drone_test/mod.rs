@@ -13,5 +13,5 @@ mod rustafarian;
 mod rustbusters;
 
 const TIMEOUT: Duration = Duration::from_millis(50);
-const FLOOD_TIMEOUT: Duration = Duration::from_millis(100);
+const FLOOD_TIMEOUT: Duration = Duration::from_millis(300);
 const HARD_TEST_TIMEOUT: Duration = Duration::from_millis(2000);

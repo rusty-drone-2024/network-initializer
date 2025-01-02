@@ -16,7 +16,7 @@ use dr_ones::Drone as DrOnes;
 use fungi_drone::FungiDrone;
 use lockheedrustin_drone::LockheedRustin;
 use rustafarian_drone::RustafarianDrone;
-use rustbusters_drone::RustBustersDrone;
+use drone::RustBustersDrone;
 use wg_2024_rust::drone::RustDrone;
 use LeDron_James::Drone as LeDronJames;
 
