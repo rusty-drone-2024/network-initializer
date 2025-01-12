@@ -1,4 +1,4 @@
-use common_structs::leaf::{Leaf, LeafCommand, LeafPacketSentEvent};
+use common_structs::leaf::{Leaf, LeafCommand, LeafEvent};
 pub use crossbeam_channel::{Receiver, Sender};
 pub use std::collections::HashMap;
 pub use wg_2024::controller::{DroneCommand, DroneEvent};
@@ -26,7 +26,7 @@ impl<T: Leaf> LeafRunnable for T {}
 pub type LeafFactory = Box<
     dyn Fn(
         NodeId,
-        Sender<LeafPacketSentEvent>,
+        Sender<LeafEvent>,
         Receiver<LeafCommand>,
         Receiver<Packet>,
         HashMap<NodeId, Sender<Packet>>,
