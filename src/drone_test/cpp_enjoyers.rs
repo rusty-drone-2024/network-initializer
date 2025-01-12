@@ -1,5 +1,5 @@
 #![cfg(test)]
-use crate::drone_test::{FLOOD_TIMEOUT, HARD_TEST_TIMEOUT, TIMEOUT};
+use crate::drone_test::{FLOOD_TIMEOUT, TIMEOUT};
 use rusty_tester::*;
 
 type Tested = ap2024_unitn_cppenjoyers_drone::CppEnjoyersDrone;
@@ -27,12 +27,6 @@ fn drone_packet_3_hop() {
 #[test]
 fn drone_packet_3_hop_crash() {
     test_drone_packet_3_hop_crash::<Tested>(TIMEOUT);
-}
-
-#[test]
-#[ignore]
-fn drone_packet_255_hop() {
-    test_drone_packet_255_hop::<Tested>(HARD_TEST_TIMEOUT);
 }
 
 #[test]
