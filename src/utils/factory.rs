@@ -6,7 +6,6 @@ use wg_2024::drone::Drone;
 pub use wg_2024::network::NodeId;
 pub use wg_2024::packet::Packet;
 
-#[allow(dead_code)]
 pub trait DroneRunnable: Drone {}
 impl<T: Drone> DroneRunnable for T {}
 pub type DroneFactory = Box<
@@ -20,7 +19,6 @@ pub type DroneFactory = Box<
     ) -> Box<dyn DroneRunnable>,
 >;
 
-#[allow(dead_code)]
 pub trait LeafRunnable: Leaf {}
 impl<T: Leaf> LeafRunnable for T {}
 pub type LeafFactory = Box<
