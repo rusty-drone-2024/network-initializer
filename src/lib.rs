@@ -3,10 +3,11 @@ mod network_initializer;
 mod utils;
 
 use crate::network_initializer::{load_from_file, NetworkInitializer};
-use crate::utils::dummy::DummyLeaf;
-use crate::utils::factory::*;
 use common_structs::leaf::Leaf;
 use wg_2024::drone::Drone;
+
+pub use crate::utils::dummy::DummyLeaf;
+pub use crate::utils::factory::*;
 
 use ap2024_unitn_cppenjoyers_drone::CppEnjoyersDrone;
 use bagel_bomber::BagelBomber;
@@ -20,11 +21,7 @@ use rustbusters_drone::RustBustersDrone;
 use wg_2024_rust::drone::RustDrone;
 use LeDron_James::Drone as LeDronJames;
 
-fn main() {
-    initialize_network();
-}
-
-fn initialize_network() -> Network {
+pub fn initialize_default_network() -> Network {
     let drone_factories = drone_factories!(
         RustafarianDrone,
         DrOnes,
@@ -41,6 +38,14 @@ fn initialize_network() -> Network {
     let client_factories = leaf_factories!(DummyLeaf, DummyLeaf);
     let server_factories = leaf_factories!(DummyLeaf, DummyLeaf);
 
+    initialize_network_with_implementation(drone_factories, client_factories, server_factories)
+}
+
+pub fn initialize_network_with_implementation(
+    drone_factories: Vec<DroneFactory>,
+    client_factories: Vec<LeafFactory>,
+    server_factories: Vec<LeafFactory>,
+) -> Network {
     let config = load_from_file("./config.toml");
     NetworkInitializer::start_simulation_from_config(
         config,
