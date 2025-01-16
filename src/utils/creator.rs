@@ -1,5 +1,5 @@
 use crate::utils::factory::{DroneEvent, DroneFactory, LeafFactory, NodeId, Packet};
-use common_structs::leaf::LeafPacketSentEvent;
+use common_structs::leaf::LeafEvent;
 use common_structs::network::{DroneInfo, LeafInfo, NodeInfo, TypeInfo};
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use std::collections::HashMap;
@@ -53,7 +53,7 @@ impl Creator {
         data: &config::Client,
         factory: &LeafFactory,
         all_packet_channels: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
-        event_send: Sender<LeafPacketSentEvent>,
+        event_send: Sender<LeafEvent>,
     ) -> NodeInfo {
         let (command_send, command_rcv) = unbounded();
         let packet_send = filter_hashmap_sender(all_packet_channels, &data.connected_drone_ids);
@@ -75,7 +75,7 @@ impl Creator {
         data: &config::Server,
         factory: &LeafFactory,
         all_packet_channels: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
-        event_send: Sender<LeafPacketSentEvent>,
+        event_send: Sender<LeafEvent>,
     ) -> NodeInfo {
         let (command_send, command_rcv) = unbounded();
         let packet_send = filter_hashmap_sender(all_packet_channels, &data.connected_drone_ids);
