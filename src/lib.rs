@@ -21,7 +21,7 @@ use rustbusters_drone::RustBustersDrone;
 use wg_2024_rust::drone::RustDrone;
 use LeDron_James::Drone as LeDronJames;
 
-pub fn initialize_default_network() -> Network {
+pub fn initialize_default_network(config_file_path: &str) -> Network {
     let drone_factories = drone_factories!(
         RustafarianDrone,
         DrOnes,
@@ -38,15 +38,21 @@ pub fn initialize_default_network() -> Network {
     let client_factories = leaf_factories!(DummyLeaf, DummyLeaf);
     let server_factories = leaf_factories!(DummyLeaf, DummyLeaf);
 
-    initialize_network_with_implementation(drone_factories, client_factories, server_factories)
+    initialize_network_with_implementation(
+        config_file_path,
+        drone_factories,
+        client_factories,
+        server_factories,
+    )
 }
 
 pub fn initialize_network_with_implementation(
+    config_file_path: &str,
     drone_factories: Vec<DroneFactory>,
     client_factories: Vec<LeafFactory>,
     server_factories: Vec<LeafFactory>,
 ) -> Network {
-    let config = load_from_file("./config.toml");
+    let config = load_from_file(config_file_path);
     NetworkInitializer::start_simulation_from_config(
         config,
         drone_factories,
