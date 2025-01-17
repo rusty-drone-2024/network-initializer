@@ -6,7 +6,7 @@ mod cpp_enjoyers;
 mod d_r_o_n_e;
 mod dr_ones;
 mod fungi;
-mod le_drones; // DO NOT RUN
+mod le_drones;
 mod lockheed;
 mod rust_rust;
 mod rustafarian;
