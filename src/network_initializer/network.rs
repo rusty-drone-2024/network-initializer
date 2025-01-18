@@ -24,6 +24,7 @@ impl NetworkInitializer {
         ni.network
     }
 
+    #[allow(clippy::needless_pass_by_value)]
     fn new(
         config: Config,
         drone_factories: Vec<DroneFactory>,
@@ -88,13 +89,13 @@ impl NetworkInitializer {
 fn create_packet_channels(config: &Config) -> HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)> {
     let mut res = HashMap::new();
 
-    for node in config.drone.iter() {
+    for node in &config.drone {
         res.insert(node.id, unbounded());
     }
-    for node in config.server.iter() {
+    for node in &config.server {
         res.insert(node.id, unbounded());
     }
-    for node in config.client.iter() {
+    for node in &config.client {
         res.insert(node.id, unbounded());
     }
 
