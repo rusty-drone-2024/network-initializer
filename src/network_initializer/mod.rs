@@ -1,7 +1,7 @@
-mod public;
+pub mod creator;
 mod initializer;
 mod parser;
-pub mod creator;
+mod public;
 
 pub use initializer::NetworkInitializer;
 pub use parser::load_from_file;

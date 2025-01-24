@@ -1,11 +1,11 @@
 use crate::network::{DroneInfo, LeafInfo, NodeInfo, TypeInfo};
 use crate::utils::factory::{DroneEvent, DroneFactory, LeafFactory, NodeId, Packet};
+use crate::NetworkInitializer;
 use common_structs::leaf::LeafEvent;
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use std::collections::HashMap;
 use std::thread;
 use wg_2024::config;
-use crate::NetworkInitializer;
 
 impl NetworkInitializer {
     fn new_info(
