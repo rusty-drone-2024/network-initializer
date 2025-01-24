@@ -1,3 +1,4 @@
+#![warn(clippy::pedantic)]
 mod drone_test;
 mod network_initializer;
 mod utils;
@@ -21,6 +22,7 @@ use rustbusters_drone::RustBustersDrone;
 use wg_2024_rust::drone::RustDrone;
 use LeDron_James::Drone as LeDronJames;
 
+#[must_use]
 pub fn initialize_default_network(config_file_path: &str) -> Network {
     let drone_factories = drone_factories!(
         RustafarianDrone,
@@ -46,6 +48,7 @@ pub fn initialize_default_network(config_file_path: &str) -> Network {
     )
 }
 
+#[must_use]
 pub fn initialize_network_with_implementation(
     config_file_path: &str,
     drone_factories: Vec<DroneFactory>,
