@@ -4,23 +4,23 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-wg_2024 = { git = "https://github.com/WGL-2024/WGL_repo_2024.git", features = ["serialize"]}
-common_structs = { git = "https://github.com/rusty-drone-2024/common-structs.git"}
+wg_2024 = { git = "https://github.com/WGL-2024/WGL_repo_2024.git", features = ["serialize"] }
+#common_structs = { git = "https://github.com/rusty-drone-2024/common-structs.git"}
 
 crossbeam-channel = ">=0.5.13"
 toml = "0.8.19"
 
 ## Bought drones
-rustafarian-drone = { git = "https://github.com/Rustafarian-Unitn/rustafarian-drone"}
+rustafarian-drone = { git = "https://github.com/Rustafarian-Unitn/rustafarian-drone" }
 dr_ones = { git = "https://github.com/Dr-Ones/drone" }
 fungi_drone = { git = "https://github.com/Fungi-B-D/Fungi-Drone.git" }
 d-r-o-n-e_drone = { git = "https://github.com/AP-2024-25-D-R-O-N-E/drone.git" }
 ap2024_unitn_cppenjoyers_drone = { git = "https://github.com/Cpp-enjoyers/drone.git" }
 lockheedrustin-drone = { git = "https://github.com/Lockheed-Rustin/drone.git" }
 LeDron_James = { git = "https://github.com/anass03/LeDron_James.git" }
-bagel_bomber = { git = "https://github.com/daw-dev/bagel-bomber.git", default-features = false}
+bagel_bomber = { git = "https://github.com/daw-dev/bagel-bomber.git", default-features = false }
 wg_2024-rust = { git = "https://github.com/LuigiMiazzo17/unitn-advancedProgramming-WGL_2024-drone.git" }
 rustbusters-drone = { git = "https://github.com/Rustbusters/drone.git" }
 
 [dev-dependencies]
-rusty_tester = { git = "https://github.com/rusty-drone-2024/rusty-tester.git"}
+rusty_tester = { git = "https://github.com/rusty-drone-2024/rusty-tester.git" }
