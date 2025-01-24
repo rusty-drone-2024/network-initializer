@@ -1,5 +1,7 @@
-mod network;
+pub mod creator;
+mod initializer;
 mod parser;
+mod public;
 
-pub use network::NetworkInitializer;
+pub use initializer::NetworkInitializer;
 pub use parser::load_from_file;

@@ -1,14 +1,13 @@
+use crate::network::{DroneInfo, LeafInfo, NodeInfo, TypeInfo};
 use crate::utils::factory::{DroneEvent, DroneFactory, LeafFactory, NodeId, Packet};
+use crate::NetworkInitializer;
 use common_structs::leaf::LeafEvent;
-use common_structs::network::{DroneInfo, LeafInfo, NodeInfo, TypeInfo};
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use std::collections::HashMap;
 use std::thread;
 use wg_2024::config;
 
-pub struct Creator {}
-
-impl Creator {
+impl NetworkInitializer {
     fn new_info(
         neighbours: Vec<NodeId>,
         type_info: TypeInfo,
@@ -21,7 +20,7 @@ impl Creator {
         }
     }
 
-    pub fn new_drone(
+    pub(super) fn new_drone(
         data: &config::Drone,
         factory: &DroneFactory,
         all_packet_channels: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
@@ -46,10 +45,10 @@ impl Creator {
             pdr: data.pdr,
             command_send_channel: command_send,
         });
-        Creator::new_info(data.connected_node_ids.clone(), type_info, packet_in)
+        Self::new_info(data.connected_node_ids.clone(), type_info, packet_in)
     }
 
-    pub fn new_client(
+    pub(super) fn new_client(
         data: &config::Client,
         factory: &LeafFactory,
         all_packet_channels: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
@@ -68,10 +67,10 @@ impl Creator {
         let type_info = TypeInfo::Client(LeafInfo {
             command_send_channel: command_send,
         });
-        Creator::new_info(data.connected_drone_ids.clone(), type_info, packet_in)
+        Self::new_info(data.connected_drone_ids.clone(), type_info, packet_in)
     }
 
-    pub fn new_server(
+    pub(super) fn new_server(
         data: &config::Server,
         factory: &LeafFactory,
         all_packet_channels: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
@@ -90,7 +89,7 @@ impl Creator {
         let type_info = TypeInfo::Server(LeafInfo {
             command_send_channel: command_send,
         });
-        Creator::new_info(data.connected_drone_ids.clone(), type_info, packet_in)
+        Self::new_info(data.connected_drone_ids.clone(), type_info, packet_in)
     }
 }
 
