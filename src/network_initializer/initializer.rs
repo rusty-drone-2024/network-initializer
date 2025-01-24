@@ -1,7 +1,6 @@
-use crate::utils::creator::Creator;
+use crate::network::{Network, SimulationChannels};
 use crate::utils::factory::DroneFactory;
 use crate::utils::factory::LeafFactory;
-use common_structs::network::{Network, SimulationChannels};
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use std::collections::HashMap;
 use wg_2024::config::Config;
@@ -13,6 +12,7 @@ pub struct NetworkInitializer {
 }
 
 impl NetworkInitializer {
+    #[must_use]
     pub fn start_simulation_from_config(
         config: Config,
         drone_factories: Vec<DroneFactory>,
@@ -39,7 +39,7 @@ impl NetworkInitializer {
         for (i, node) in config.drone.iter().enumerate() {
             topology.insert(
                 node.id,
-                Creator::new_drone(
+                Self::new_drone(
                     node,
                     &drone_factories[i % drone_factories.len()],
                     &all_packet_channels,
@@ -51,7 +51,7 @@ impl NetworkInitializer {
         for (i, node) in config.server.iter().enumerate() {
             topology.insert(
                 node.id,
-                Creator::new_server(
+                Self::new_server(
                     node,
                     &server_factories[i % drone_factories.len()],
                     &all_packet_channels,
@@ -63,7 +63,7 @@ impl NetworkInitializer {
         for (i, node) in config.client.iter().enumerate() {
             topology.insert(
                 node.id,
-                Creator::new_client(
+                Self::new_client(
                     node,
                     &client_factories[i % drone_factories.len()],
                     &all_packet_channels,
@@ -77,8 +77,8 @@ impl NetworkInitializer {
                 topology,
                 simulation_channels: SimulationChannels {
                     drone_event_listener,
-                    drone_event_sender,
                     leaf_event_listener,
+                    drone_event_sender,
                     leaf_event_sender,
                 },
             },
