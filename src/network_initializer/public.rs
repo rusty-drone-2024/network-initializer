@@ -19,6 +19,7 @@ use rustbusters_drone::RustBustersDrone;
 use rusty_drones::RustyDrone;
 use wg_2024_rust::drone::RustDrone;
 use LeDron_James::Drone as LeDronJames;
+use rusty_drones_servers::*;
 
 impl NetworkInitializer {
     #[must_use]
@@ -37,7 +38,7 @@ impl NetworkInitializer {
         );
 
         let client_factories = leaf_factories!(mc::TextMediaClient);
-        let server_factories = leaf_factories!(mc::TextServer, mc::MediaServer);
+        let server_factories = leaf_factories!(mc::TextServer, mc::MediaServer, TextServer, MediaServer, ChatServer);
 
         Self::initialize_network_with_implementation(
             config_file_path,
