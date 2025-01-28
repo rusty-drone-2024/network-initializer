@@ -24,7 +24,7 @@ rustbusters-drone = { git = "https://github.com/Rustbusters/drone.git" }
 
 ## Server and client
 rusty_drones = { git = "https://github.com/rusty-drone-2024/rusty-drone.git" }
-matteo_contribution = { path = "../matteo-contribution" }
+matteo_contribution = { git = "https://github.com/rusty-drone-2024/matteo-contribution.git" }
 
 [dev-dependencies]
 rusty_tester = { git = "https://github.com/rusty-drone-2024/rusty-tester.git" }
