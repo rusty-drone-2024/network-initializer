@@ -53,7 +53,7 @@ impl NetworkInitializer {
                 node.id,
                 Self::new_server(
                     node,
-                    &server_factories[i % drone_factories.len()],
+                    &server_factories[i % server_factories.len()],
                     &all_packet_channels,
                     leaf_event_sender.clone(),
                 ),
@@ -65,7 +65,7 @@ impl NetworkInitializer {
                 node.id,
                 Self::new_client(
                     node,
-                    &client_factories[i % drone_factories.len()],
+                    &client_factories[i % client_factories.len()],
                     &all_packet_channels,
                     leaf_event_sender.clone(),
                 ),
