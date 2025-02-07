@@ -18,6 +18,7 @@ use rustafarian_drone::RustafarianDrone;
 use rustbusters_drone::RustBustersDrone;
 use rusty_drones::RustyDrone;
 use rusty_drones_servers::{ChatServer, MediaServer, TextServer};
+use client::Client as ChatClient;
 use wg_2024_rust::drone::RustDrone;
 use LeDron_James::Drone as LeDronJames;
 
@@ -37,13 +38,13 @@ impl NetworkInitializer {
             RustBustersDrone
         );
 
-        let client_factories = leaf_factories!(mc::TextMediaClient);
+        let client_factories = leaf_factories!(mc::TextMediaClient, ChatClient);
         let server_factories = leaf_factories!(
             mc::TextServer,
             mc::MediaServer,
             TextServer,
             MediaServer,
-            ChatServer
+            ChatServer,
         );
 
         Self::initialize_network_with_implementation(
@@ -58,8 +59,15 @@ impl NetworkInitializer {
     pub fn initialize_default_network_with_only_rusty_drone(config_file_path: &str) -> Network {
         let drone_factories = drone_factories!(RustyDrone);
 
-        let client_factories = leaf_factories!(mc::TextMediaClient);
-        let server_factories = leaf_factories!(mc::TextServer, mc::MediaServer);
+        let client_factories = leaf_factories!(mc::TextMediaClient, ChatClient);
+        let server_factories = leaf_factories!(
+            mc::TextServer,
+            mc::MediaServer,
+            TextServer,
+            MediaServer,
+            ChatServer,
+
+        );
 
         Self::initialize_network_with_implementation(
             config_file_path,
