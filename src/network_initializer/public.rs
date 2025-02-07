@@ -9,6 +9,7 @@ use crate::network::Network;
 use crate::{drone_factories, leaf_factories};
 use ap2024_unitn_cppenjoyers_drone::CppEnjoyersDrone;
 use bagel_bomber::BagelBomber;
+use client::Client as ChatClient;
 use d_r_o_n_e_drone::MyDrone as DRONEDrone;
 use dr_ones::Drone as DrOnes;
 use fungi_drone::FungiDrone;
@@ -18,7 +19,6 @@ use rustafarian_drone::RustafarianDrone;
 use rustbusters_drone::RustBustersDrone;
 use rusty_drones::RustyDrone;
 use rusty_drones_servers::{ChatServer, MediaServer, TextServer};
-use client::Client as ChatClient;
 use wg_2024_rust::drone::RustDrone;
 use LeDron_James::Drone as LeDronJames;
 
@@ -66,7 +66,6 @@ impl NetworkInitializer {
             TextServer,
             MediaServer,
             ChatServer,
-
         );
 
         Self::initialize_network_with_implementation(
