@@ -38,7 +38,7 @@ impl NetworkInitializer {
             RustBustersDrone
         );
 
-        let client_factories = leaf_factories!(mc::TextMediaClient, ChatClient);
+        let client_factories = leaf_factories!(mc::TextMediaClient, ChatClient, ChatClient);
         let server_factories = leaf_factories!(
             mc::TextServer,
             mc::MediaServer,
@@ -59,7 +59,7 @@ impl NetworkInitializer {
     pub fn initialize_default_network_with_only_rusty_drone(config_file_path: &str) -> Network {
         let drone_factories = drone_factories!(RustyDrone);
 
-        let client_factories = leaf_factories!(mc::TextMediaClient, ChatClient);
+        let client_factories = leaf_factories!(mc::TextMediaClient, ChatClient, ChatClient);
         let server_factories = leaf_factories!(
             mc::TextServer,
             mc::MediaServer,
