@@ -23,6 +23,7 @@ use LeDron_James::Drone as LeDronJames;
 
 impl NetworkInitializer {
     #[must_use]
+    /// Initialize network with default factories.
     pub fn initialize_default_network(config_file_path: &str) -> Network {
         let drone_factories = drone_factories!(
             RustafarianDrone,
@@ -55,6 +56,7 @@ impl NetworkInitializer {
     }
 
     #[must_use]
+    /// Initialize network with only RustyDrone as drone factory.
     pub fn initialize_default_network_with_only_rusty_drone(config_file_path: &str) -> Network {
         let drone_factories = drone_factories!(RustyDrone);
 
@@ -70,6 +72,7 @@ impl NetworkInitializer {
     }
 
     #[must_use]
+    /// Initialize network reading the config from a file path.
     pub fn initialize_network_with_implementation(
         config_file_path: &str,
         drone_factories: Vec<DroneFactory>,

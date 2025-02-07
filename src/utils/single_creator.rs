@@ -21,6 +21,7 @@ use wg_2024_rust::drone::RustDrone;
 use LeDron_James::Drone as LeDronJames;
 
 #[must_use]
+/// Create a single drone using a pseudo-random factory (derived from id).
 pub fn create_drone(
     id: NodeId,
     pdr: f32,

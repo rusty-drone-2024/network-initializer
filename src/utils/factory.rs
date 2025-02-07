@@ -8,6 +8,7 @@ pub use wg_2024::packet::Packet;
 
 pub trait DroneRunnable: Drone {}
 impl<T: Drone> DroneRunnable for T {}
+/// Abstraction to create a drone
 pub type DroneFactory = Box<
     dyn Fn(
         NodeId,
@@ -21,6 +22,7 @@ pub type DroneFactory = Box<
 
 pub trait LeafRunnable: Leaf {}
 impl<T: Leaf> LeafRunnable for T {}
+/// Abstraction to create a leaf (server/client)
 pub type LeafFactory = Box<
     dyn Fn(
         NodeId,
@@ -32,6 +34,7 @@ pub type LeafFactory = Box<
 >;
 
 #[macro_export]
+/// Create DroneFactory from list of types
 macro_rules! drone_factories {
     ($($type_name:ty),* $(,)?) => {{
         vec![
@@ -47,6 +50,7 @@ macro_rules! drone_factories {
 }
 
 #[macro_export]
+/// Create LeafFactory from list of types
 macro_rules! leaf_factories {
     ($($type_name:ty),* $(,)?) => {{
         vec![

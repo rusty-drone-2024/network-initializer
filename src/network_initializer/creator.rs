@@ -8,6 +8,7 @@ use std::thread;
 use wg_2024::config;
 
 impl NetworkInitializer {
+    /// Generate node info.
     fn new_info(
         neighbours: Vec<NodeId>,
         type_info: TypeInfo,
@@ -20,6 +21,9 @@ impl NetworkInitializer {
         }
     }
 
+    /// Add new drone to the network.
+    /// Start running the drone on a new thread.
+    /// Returns node info of the new drone.
     pub(super) fn new_drone(
         data: &config::Drone,
         factory: &DroneFactory,
@@ -48,6 +52,9 @@ impl NetworkInitializer {
         Self::new_info(data.connected_node_ids.clone(), type_info, packet_in)
     }
 
+    /// Add new client (leaf) to the network.
+    /// Start running the client on a new thread.
+    /// Returns node info of the new client.
     pub(super) fn new_client(
         data: &config::Client,
         factory: &LeafFactory,
@@ -70,6 +77,9 @@ impl NetworkInitializer {
         Self::new_info(data.connected_drone_ids.clone(), type_info, packet_in)
     }
 
+    /// Add new server (leaf) to the network.
+    /// Start running the server on a new thread.
+    /// Returns node info of the new server.
     pub(super) fn new_server(
         data: &config::Server,
         factory: &LeafFactory,
@@ -93,6 +103,8 @@ impl NetworkInitializer {
     }
 }
 
+/// Create hashmap using the nodes in filter as key.
+/// Value (sender channel) is taken from a lookup of the respective node in all.
 fn filter_hashmap_sender(
     all: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
     filter: &Vec<NodeId>,
