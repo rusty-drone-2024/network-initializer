@@ -26,6 +26,7 @@ rustbusters-drone = { git = "https://github.com/Rustbusters/drone.git" }
 rusty_drones = { git = "https://github.com/rusty-drone-2024/rusty-drone.git" }
 matteo_contribution = { git = "https://github.com/rusty-drone-2024/matteo-contribution.git" }
 rusty-drones-servers = { git = "https://github.com/rusty-drone-2024/samuel-contribution"}
+client = { git = "https://github.com/rusty-drone-2024/picto_rust_client" }
 
 [dev-dependencies]
 rusty_tester = { git = "https://github.com/rusty-drone-2024/rusty-tester.git" }

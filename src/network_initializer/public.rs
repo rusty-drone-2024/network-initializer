@@ -9,6 +9,7 @@ use crate::network::Network;
 use crate::{drone_factories, leaf_factories};
 use ap2024_unitn_cppenjoyers_drone::CppEnjoyersDrone;
 use bagel_bomber::BagelBomber;
+use client::Client as ChatClient;
 use d_r_o_n_e_drone::MyDrone as DRONEDrone;
 use dr_ones::Drone as DrOnes;
 use fungi_drone::FungiDrone;
@@ -37,13 +38,13 @@ impl NetworkInitializer {
             RustBustersDrone
         );
 
-        let client_factories = leaf_factories!(mc::TextMediaClient);
+        let client_factories = leaf_factories!(mc::TextMediaClient, ChatClient);
         let server_factories = leaf_factories!(
             mc::TextServer,
             mc::MediaServer,
             TextServer,
             MediaServer,
-            ChatServer
+            ChatServer,
         );
 
         Self::initialize_network_with_implementation(
@@ -58,8 +59,14 @@ impl NetworkInitializer {
     pub fn initialize_default_network_with_only_rusty_drone(config_file_path: &str) -> Network {
         let drone_factories = drone_factories!(RustyDrone);
 
-        let client_factories = leaf_factories!(mc::TextMediaClient);
-        let server_factories = leaf_factories!(mc::TextServer, mc::MediaServer);
+        let client_factories = leaf_factories!(mc::TextMediaClient, ChatClient);
+        let server_factories = leaf_factories!(
+            mc::TextServer,
+            mc::MediaServer,
+            TextServer,
+            MediaServer,
+            ChatServer,
+        );
 
         Self::initialize_network_with_implementation(
             config_file_path,
