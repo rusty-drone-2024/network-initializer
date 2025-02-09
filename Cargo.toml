@@ -22,11 +22,6 @@ bagel_bomber = { git = "https://github.com/daw-dev/bagel-bomber.git", default-fe
 wg_2024-rust = { git = "https://github.com/LuigiMiazzo17/unitn-advancedProgramming-WGL_2024-drone.git" }
 rustbusters-drone = { git = "https://github.com/Rustbusters/drone.git" }
 
-## Server and client
-rusty_drones = { git = "https://github.com/rusty-drone-2024/rusty-drone.git" }
-matteo_contribution = { git = "https://github.com/rusty-drone-2024/matteo-contribution.git" }
-rusty-drones-servers = { git = "https://github.com/rusty-drone-2024/samuel-contribution"}
-client = { git = "https://github.com/rusty-drone-2024/picto_rust_client" }
-
 [dev-dependencies]
 rusty_tester = { git = "https://github.com/rusty-drone-2024/rusty-tester.git" }
+
