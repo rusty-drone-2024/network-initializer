@@ -1,36 +1,39 @@
 use crate::factory::{DroneImpl, LeafImpl};
 use crate::network::{Network, SimulationChannels};
+use crate::NetworkInitializer;
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use std::collections::HashMap;
 use wg_2024::config::Config;
 use wg_2024::network::NodeId;
 use wg_2024::packet::Packet;
 
-pub struct NetworkInitializer {
-    network: Network,
-}
-
 impl NetworkInitializer {
-    #[must_use]
-    /// Create a new `NetworkInitializer` and returns it's network.
-    pub fn start_simulation_from_config(
+    /// Initialize all network components.
+    /// # Errors
+    /// - In case any factory is empty
+    /// - In case the topology is invalid
+    pub(super) fn new(
         config: &Config,
         drone_factories: Vec<DroneImpl>,
         client_factories: Vec<LeafImpl>,
         server_factories: Vec<LeafImpl>,
-    ) -> Network {
-        let ni =
-            NetworkInitializer::new(config, drone_factories, client_factories, server_factories);
-        ni.network
+    ) -> Result<Self, String> {
+        Self::check_config(config)?;
+        Self::new_unchecked_config(config, drone_factories, client_factories, server_factories)
     }
 
     /// Initialize all network components.
-    fn new(
+    /// Does not check topology validity.
+    /// # Errors
+    /// - In case any factory is empty
+    pub(super) fn new_unchecked_config(
         config: &Config,
         drone_factories: Vec<DroneImpl>,
         client_factories: Vec<LeafImpl>,
         server_factories: Vec<LeafImpl>,
-    ) -> Self {
+    ) -> Result<Self, String> {
+        Self::check_factories(&drone_factories, &client_factories, &server_factories)?;
+
         let mut topology = HashMap::new();
         let (drone_event_sender, drone_event_listener) = unbounded();
         let (leaf_event_sender, leaf_event_listener) = unbounded();
@@ -75,7 +78,7 @@ impl NetworkInitializer {
             );
         }
 
-        Self {
+        Ok(Self {
             network: Network {
                 topology,
                 simulation_channels: SimulationChannels {
@@ -88,7 +91,7 @@ impl NetworkInitializer {
                 client_factories,
                 server_factories,
             },
-        }
+        })
     }
 }
 
