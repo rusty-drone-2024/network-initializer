@@ -7,9 +7,9 @@ pub use wg_2024::network::NodeId;
 pub use wg_2024::packet::Packet;
 
 pub trait DroneRunnable: Drone {}
-impl<T: Drone> DroneRunnable for T {}
+impl<T: Drone  + 'static> DroneRunnable for T {}
 pub type DroneFactory = Box<
-    dyn Fn(
+    dyn Send + Sync + Fn(
         NodeId,
         Sender<DroneEvent>,
         Receiver<DroneCommand>,
@@ -24,9 +24,9 @@ pub struct DroneImpl {
 }
 
 pub trait LeafRunnable: Leaf {}
-impl<T: Leaf> LeafRunnable for T {}
+impl<T: Leaf + 'static> LeafRunnable for T {}
 pub type LeafFactory = Box<
-    dyn Fn(
+    dyn Send + Sync + Fn(
         NodeId,
         Sender<LeafEvent>,
         Receiver<LeafCommand>,
