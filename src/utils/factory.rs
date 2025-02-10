@@ -7,16 +7,18 @@ pub use wg_2024::network::NodeId;
 pub use wg_2024::packet::Packet;
 
 pub trait DroneRunnable: Drone {}
-impl<T: Drone  + 'static> DroneRunnable for T {}
+impl<T: Drone + 'static> DroneRunnable for T {}
 pub type DroneFactory = Box<
-    dyn Send + Sync + Fn(
-        NodeId,
-        Sender<DroneEvent>,
-        Receiver<DroneCommand>,
-        Receiver<Packet>,
-        HashMap<NodeId, Sender<Packet>>,
-        f32,
-    ) -> Box<dyn DroneRunnable>,
+    dyn Send
+        + Sync
+        + Fn(
+            NodeId,
+            Sender<DroneEvent>,
+            Receiver<DroneCommand>,
+            Receiver<Packet>,
+            HashMap<NodeId, Sender<Packet>>,
+            f32,
+        ) -> Box<dyn DroneRunnable>,
 >;
 pub struct DroneImpl {
     pub name: String,
@@ -26,13 +28,15 @@ pub struct DroneImpl {
 pub trait LeafRunnable: Leaf {}
 impl<T: Leaf + 'static> LeafRunnable for T {}
 pub type LeafFactory = Box<
-    dyn Send + Sync + Fn(
-        NodeId,
-        Sender<LeafEvent>,
-        Receiver<LeafCommand>,
-        Receiver<Packet>,
-        HashMap<NodeId, Sender<Packet>>,
-    ) -> Box<dyn LeafRunnable>,
+    dyn Send
+        + Sync
+        + Fn(
+            NodeId,
+            Sender<LeafEvent>,
+            Receiver<LeafCommand>,
+            Receiver<Packet>,
+            HashMap<NodeId, Sender<Packet>>,
+        ) -> Box<dyn LeafRunnable>,
 >;
 pub struct LeafImpl {
     pub name: String,
