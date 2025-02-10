@@ -7,7 +7,6 @@ use wg_2024::config::Config;
 use wg_2024::network::NodeId;
 use wg_2024::packet::Packet;
 
-#[allow(clippy::module_name_repetitions)]
 pub struct NetworkInitializer {
     network: Network,
 }

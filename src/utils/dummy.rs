@@ -4,7 +4,6 @@ use std::collections::HashMap;
 use wg_2024::network::NodeId;
 use wg_2024::packet::Packet;
 
-#[allow(clippy::module_name_repetitions)]
 pub struct DummyLeaf {}
 
 impl Leaf for DummyLeaf {

@@ -9,7 +9,6 @@ pub use wg_2024::packet::Packet;
 pub trait DroneRunnable: Drone {}
 impl<T: Drone> DroneRunnable for T {}
 
-#[allow(clippy::module_name_repetitions)]
 /// Abstraction to create a drone
 pub type DroneFactory = Box<
     dyn Fn(
@@ -25,7 +24,6 @@ pub type DroneFactory = Box<
 pub trait LeafRunnable: Leaf {}
 impl<T: Leaf> LeafRunnable for T {}
 
-#[allow(clippy::module_name_repetitions)]
 /// Abstraction to create a leaf (server/client)
 pub type LeafFactory = Box<
     dyn Fn(
