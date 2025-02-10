@@ -11,16 +11,15 @@ pub struct NetworkInitializer {
 }
 
 impl NetworkInitializer {
-    #[must_use]
     pub fn start_simulation_from_config(
         config: &Config,
         drone_factories: Vec<DroneImpl>,
         client_factories: Vec<LeafImpl>,
         server_factories: Vec<LeafImpl>,
-    ) -> Network {
+    ) -> Result<Network, String> {
         let ni =
-            NetworkInitializer::new(config, drone_factories, client_factories, server_factories);
-        ni.network
+            NetworkInitializer::new(config, drone_factories, client_factories, server_factories)?;
+        Ok(ni.network)
     }
 
     fn new(
@@ -28,7 +27,10 @@ impl NetworkInitializer {
         drone_factories: Vec<DroneImpl>,
         client_factories: Vec<LeafImpl>,
         server_factories: Vec<LeafImpl>,
-    ) -> Self {
+    ) -> Result<Self, String> {
+        Self::check_config(config)?;
+        Self::check_factories(&drone_factories, &client_factories, &server_factories)?;
+
         let mut topology = HashMap::new();
         let (drone_event_sender, drone_event_listener) = unbounded();
         let (leaf_event_sender, leaf_event_listener) = unbounded();
@@ -70,7 +72,7 @@ impl NetworkInitializer {
             );
         }
 
-        Self {
+        Ok(Self {
             network: Network {
                 topology,
                 simulation_channels: SimulationChannels {
@@ -83,7 +85,7 @@ impl NetworkInitializer {
                 client_factories,
                 server_factories,
             },
-        }
+        })
     }
 }
 

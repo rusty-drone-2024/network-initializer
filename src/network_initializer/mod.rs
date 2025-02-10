@@ -1,3 +1,4 @@
+mod checker;
 pub mod creator;
 mod initializer;
 mod parser;

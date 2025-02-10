@@ -3,13 +3,12 @@ use crate::factory::{DroneImpl, LeafImpl};
 use crate::network::Network;
 
 impl NetworkInitializer {
-    #[must_use]
     pub fn initialize_network_with_implementation(
         config_file_path: &str,
         drone_factories: Vec<DroneImpl>,
         client_factories: Vec<LeafImpl>,
         server_factories: Vec<LeafImpl>,
-    ) -> Network {
+    ) -> Result<Network, String> {
         let config = load_from_file(config_file_path);
         NetworkInitializer::start_simulation_from_config(
             &config,
