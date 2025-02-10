@@ -59,12 +59,12 @@ macro_rules! drone_factories {
 
 #[macro_export]
 macro_rules! leaf_factories {
-    ($($type_name:ty),* $(,)?) => {{
+    ($($type_name:ty, $name_impl:tt),* $(,)?) => {{
         vec![
             $(
                 LeafImpl{
                     name: ($name_impl).to_string(),
-                    init: Box::new(
+                    create: Box::new(
                         |id, csend, crecv, precv, psend| -> Box<dyn LeafRunnable> {
                             Box::new(<$type_name>::new(id, csend, crecv, precv, psend))
                         }
