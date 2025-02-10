@@ -18,9 +18,15 @@ impl NetworkInitializer {
         for client in &config.client {
             let nexts = client.connected_drone_ids.len();
             if nexts != 1 && nexts != 2 {
-                return Err(format!("Server {} must be connected to 1 or 2 nodes", client.id));
+                return Err(format!(
+                    "Server {} must be connected to 1 or 2 nodes",
+                    client.id
+                ));
             } else if nodes[&client.id].len() < nexts {
-                return Err(format!("Server {} contains a duplicated neighbour", client.id));
+                return Err(format!(
+                    "Server {} contains a duplicated neighbour",
+                    client.id
+                ));
             }
         }
 
@@ -29,9 +35,15 @@ impl NetworkInitializer {
         for server in &config.server {
             let nexts = server.connected_drone_ids.len();
             if nexts < 2 {
-                return Err(format!("Server {} must be connected to at least 2 nodes", server.id));
+                return Err(format!(
+                    "Server {} must be connected to at least 2 nodes",
+                    server.id
+                ));
             } else if nodes[&server.id].len() < nexts {
-                return Err(format!("Server {} contains a duplicated neighbour", server.id));
+                return Err(format!(
+                    "Server {} contains a duplicated neighbour",
+                    server.id
+                ));
             }
         }
 
@@ -39,7 +51,10 @@ impl NetworkInitializer {
         for drone in &config.drone {
             let nexts = drone.connected_node_ids.len();
             if nodes[&drone.id].len() < nexts {
-                return Err(format!("Drone {} contains a duplicated neighbour", drone.id));
+                return Err(format!(
+                    "Drone {} contains a duplicated neighbour",
+                    drone.id
+                ));
             }
         }
 
@@ -51,7 +66,9 @@ impl NetworkInitializer {
                     return Err(format!("Node {id} cannot be connected to itself"));
                 }
                 let next_next = nodes.get(next).ok_or("Connected to not existing node")?;
-                next_next.get(id).ok_or(format!("Connection is not symmetrical {id}-{next}"))?;
+                next_next
+                    .get(id)
+                    .ok_or(format!("Connection is not symmetrical {id}-{next}"))?;
             }
         }
 
