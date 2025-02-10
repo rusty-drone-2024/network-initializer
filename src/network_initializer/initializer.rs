@@ -11,6 +11,7 @@ pub struct NetworkInitializer {
 }
 
 impl NetworkInitializer {
+    /// Create a new `NetworkInitializer` and returns it's network.
     pub fn start_simulation_from_config(
         config: &Config,
         drone_factories: Vec<DroneImpl>,
@@ -22,6 +23,7 @@ impl NetworkInitializer {
         Ok(ni.network)
     }
 
+    /// Initialize all network components.
     fn new(
         config: &Config,
         drone_factories: Vec<DroneImpl>,
@@ -36,6 +38,7 @@ impl NetworkInitializer {
         let (leaf_event_sender, leaf_event_listener) = unbounded();
         let all_packet_channels = create_packet_channels(config);
 
+        // Initialize all drones
         for (i, node) in config.drone.iter().enumerate() {
             topology.insert(
                 node.id,
@@ -48,6 +51,7 @@ impl NetworkInitializer {
             );
         }
 
+        // Initialize all servers
         for (i, node) in config.server.iter().enumerate() {
             topology.insert(
                 node.id,
@@ -60,6 +64,7 @@ impl NetworkInitializer {
             );
         }
 
+        // Initialize all clients
         for (i, node) in config.client.iter().enumerate() {
             topology.insert(
                 node.id,
@@ -89,6 +94,7 @@ impl NetworkInitializer {
     }
 }
 
+/// Create new Sender+Receiving channel pairings for each node in the config.
 fn create_packet_channels(config: &Config) -> HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)> {
     let mut res = HashMap::new();
 
