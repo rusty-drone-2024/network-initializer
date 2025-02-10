@@ -18,6 +18,10 @@ pub type DroneFactory = Box<
         f32,
     ) -> Box<dyn DroneRunnable>,
 >;
+pub struct DroneImpl {
+    pub name: String,
+    pub create: DroneFactory,
+}
 
 pub trait LeafRunnable: Leaf {}
 impl<T: Leaf> LeafRunnable for T {}
@@ -30,17 +34,24 @@ pub type LeafFactory = Box<
         HashMap<NodeId, Sender<Packet>>,
     ) -> Box<dyn LeafRunnable>,
 >;
+pub struct LeafImpl {
+    pub name: String,
+    pub create: LeafFactory,
+}
 
 #[macro_export]
 macro_rules! drone_factories {
-    ($($type_name:ty),* $(,)?) => {{
+    ($($type_name:ty, $name_impl:tt),* $(,)?) => {{
         vec![
             $(
-                Box::new(
-                    |id, csend, crecv, precv, psend, pdr| -> Box<dyn DroneRunnable> {
-                        Box::new(<$type_name>::new(id, csend, crecv, precv, psend, pdr))
-                    }
-                ) as DroneFactory
+                DroneImpl{
+                    name: ($name_impl).to_string(),
+                    create: Box::new(
+                        |id, csend, crecv, precv, psend, pdr| -> Box<dyn DroneRunnable> {
+                            Box::new(<$type_name>::new(id, csend, crecv, precv, psend, pdr))
+                        }
+                    ) as DroneFactory
+                }
             ),*
         ]
     }};
@@ -51,11 +62,14 @@ macro_rules! leaf_factories {
     ($($type_name:ty),* $(,)?) => {{
         vec![
             $(
-                Box::new(
-                    |id, csend, crecv, precv, psend| -> Box<dyn LeafRunnable> {
-                        Box::new(<$type_name>::new(id, csend, crecv, precv, psend))
-                    }
-                ) as LeafFactory
+                LeafImpl{
+                    name: ($name_impl).to_string(),
+                    init: Box::new(
+                        |id, csend, crecv, precv, psend| -> Box<dyn LeafRunnable> {
+                            Box::new(<$type_name>::new(id, csend, crecv, precv, psend))
+                        }
+                    ) as LeafFactory
+                }
             ),*
         ]
     }};
