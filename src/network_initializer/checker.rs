@@ -18,9 +18,15 @@ impl NetworkInitializer {
         for client in &config.client {
             let nexts = client.connected_drone_ids.len();
             if nexts != 1 && nexts != 2 {
-                return Err("Client can be connect to only 1 or 2 nodes".to_string());
+                return Err(format!(
+                    "Server {} must be connected to 1 or 2 nodes",
+                    client.id
+                ));
             } else if nodes[&client.id].len() < nexts {
-                return Err("Duplicated NodeId connection".to_string());
+                return Err(format!(
+                    "Server {} contains a duplicated neighbour",
+                    client.id
+                ));
             }
         }
 
@@ -29,9 +35,15 @@ impl NetworkInitializer {
         for server in &config.server {
             let nexts = server.connected_drone_ids.len();
             if nexts < 2 {
-                return Err("Server must be connected to at least 2 nodes".to_string());
+                return Err(format!(
+                    "Server {} must be connected to at least 2 nodes",
+                    server.id
+                ));
             } else if nodes[&server.id].len() < nexts {
-                return Err("Duplicated neighbour".to_string());
+                return Err(format!(
+                    "Server {} contains a duplicated neighbour",
+                    server.id
+                ));
             }
         }
 
@@ -39,7 +51,10 @@ impl NetworkInitializer {
         for drone in &config.drone {
             let nexts = drone.connected_node_ids.len();
             if nodes[&drone.id].len() < nexts {
-                return Err("Duplicated neighbour".to_string());
+                return Err(format!(
+                    "Drone {} contains a duplicated neighbour",
+                    drone.id
+                ));
             }
         }
 
@@ -48,10 +63,12 @@ impl NetworkInitializer {
         for (id, nexts) in &nodes {
             for next in nexts {
                 if id == next {
-                    return Err("Node cannot be connected to itself".to_string());
+                    return Err(format!("Node {id} cannot be connected to itself"));
                 }
                 let next_next = nodes.get(next).ok_or("Connected to not existing node")?;
-                next_next.get(id).ok_or("Connection is not symmetrical")?;
+                next_next
+                    .get(id)
+                    .ok_or(format!("Connection is not symmetrical {id}-{next}"))?;
             }
         }
 
@@ -71,7 +88,7 @@ impl NetworkInitializer {
                 server.connected_drone_ids.iter().copied().collect(),
             );
             if old.is_some() {
-                return Err("Duplicated node id".to_string());
+                return Err(format!("Duplicated node id {}", server.id));
             }
         }
         for client in &config.client {
@@ -80,13 +97,13 @@ impl NetworkInitializer {
                 client.connected_drone_ids.iter().copied().collect(),
             );
             if old.is_some() {
-                return Err("Duplicated node id".to_string());
+                return Err(format!("Duplicated node id {}", client.id));
             }
         }
         for drone in &config.drone {
             let old = nodes.insert(drone.id, drone.connected_node_ids.iter().copied().collect());
             if old.is_some() {
-                return Err("Duplicated node id".to_string());
+                return Err(format!("Duplicated node id {}", drone.id));
             }
         }
 
@@ -102,7 +119,7 @@ impl NetworkInitializer {
         servers: &[LeafImpl],
     ) -> Result<(), String> {
         if drones.is_empty() || clients.is_empty() || servers.is_empty() {
-            return Err("Implementation is empty".to_string());
+            return Err("One of the implementation vector is empty".to_string());
         }
         Ok(())
     }
