@@ -7,13 +7,14 @@ use wg_2024::config::Config;
 use wg_2024::network::NodeId;
 use wg_2024::packet::Packet;
 
+#[allow(clippy::module_name_repetitions)]
 pub struct NetworkInitializer {
     network: Network,
 }
 
 impl NetworkInitializer {
     #[must_use]
-    /// Create a new NetworkInitializer and returns it's network.
+    /// Create a new `NetworkInitializer` and returns it's network.
     pub fn start_simulation_from_config(
         config: Config,
         drone_factories: Vec<DroneFactory>,

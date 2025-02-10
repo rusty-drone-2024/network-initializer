@@ -14,10 +14,12 @@ pub struct Network {
 }
 
 pub struct SimulationChannels {
-    // Used for communication with the Simulation Controller
+    // Used by drones for communication with the Simulation Controller
     pub drone_event_listener: Receiver<DroneEvent>,
+    // Used by leafs (clients and servers) for communication with the Simulation Controller
     pub leaf_event_listener: Receiver<LeafEvent>,
-    // Sent to the nodes of the network by the Network Initializer
+    // Sent to the drones of the network by the Network Initializer
     pub drone_event_sender: Sender<DroneEvent>,
+    // Sent to the leafs (clients and servers) of the network by the Network Initializer
     pub leaf_event_sender: Sender<LeafEvent>,
 }

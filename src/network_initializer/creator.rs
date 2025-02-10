@@ -23,7 +23,8 @@ impl NetworkInitializer {
 
     /// Add new drone to the network.
     /// Start running the drone on a new thread.
-    /// Returns node info of the new drone.
+    /// # Returns
+    /// Node info of the new drone.
     pub(super) fn new_drone(
         data: &config::Drone,
         factory: &DroneFactory,
@@ -54,7 +55,8 @@ impl NetworkInitializer {
 
     /// Add new client (leaf) to the network.
     /// Start running the client on a new thread.
-    /// Returns node info of the new client.
+    /// # Returns
+    /// Node info of the new client.
     pub(super) fn new_client(
         data: &config::Client,
         factory: &LeafFactory,
