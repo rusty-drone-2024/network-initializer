@@ -4,6 +4,9 @@ use crate::network::Network;
 
 impl NetworkInitializer {
     #[must_use]
+    /// Initialize network with specific factories.
+    /// # Returns
+    /// Network according to the configuration (read from file path)
     pub fn initialize_network_with_implementation(
         config_file_path: &str,
         drone_factories: Vec<DroneImpl>,

@@ -8,6 +8,7 @@ use std::collections::HashMap;
 use std::thread;
 
 #[must_use]
+/// Create a single drone using a pseudo-random factory (derived from id).
 pub fn create_drone(
     id: NodeId,
     pdr: f32,
