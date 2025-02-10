@@ -7,7 +7,7 @@ pub use wg_2024::network::NodeId;
 pub use wg_2024::packet::Packet;
 
 pub trait DroneRunnable: Drone {}
-impl<T: Leaf + 'static> DroneRunnable for T {}
+impl<T: Drone + 'static> DroneRunnable for T {}
 
 /// Abstraction to create a drone
 pub type DroneFactory = Box<
