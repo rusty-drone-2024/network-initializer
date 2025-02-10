@@ -1,5 +1,6 @@
+use crate::factory::{DroneImpl, LeafImpl};
 use crate::network::{DroneInfo, LeafInfo, NodeInfo, TypeInfo};
-use crate::utils::factory::{DroneEvent, DroneFactory, LeafFactory, NodeId, Packet};
+use crate::utils::factory::{DroneEvent, NodeId, Packet};
 use crate::NetworkInitializer;
 use common_structs::leaf::LeafEvent;
 use crossbeam_channel::{unbounded, Receiver, Sender};
@@ -8,29 +9,19 @@ use std::thread;
 use wg_2024::config;
 
 impl NetworkInitializer {
-    fn new_info(
-        neighbours: Vec<NodeId>,
-        type_info: TypeInfo,
-        packet_in_channel: Sender<Packet>,
-    ) -> NodeInfo {
-        NodeInfo {
-            neighbours: neighbours.into_iter().collect(),
-            packet_in_channel,
-            type_info,
-        }
-    }
-
     pub(super) fn new_drone(
         data: &config::Drone,
-        factory: &DroneFactory,
+        factory: &DroneImpl,
         all_packet_channels: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
         event_send: Sender<DroneEvent>,
     ) -> NodeInfo {
         let (command_send, command_rcv) = unbounded();
         let packet_send = filter_hashmap_sender(all_packet_channels, &data.connected_node_ids);
         let (packet_in, packet_rcv) = all_packet_channels[&data.id].clone();
+        let creator = &factory.create;
+        let name = factory.name.clone();
 
-        let mut drone = factory(
+        let mut drone = creator(
             data.id,
             event_send,
             command_rcv,
@@ -45,20 +36,22 @@ impl NetworkInitializer {
             pdr: data.pdr,
             command_send_channel: command_send,
         });
-        Self::new_info(data.connected_node_ids.clone(), type_info, packet_in)
+        NodeInfo::new(data.connected_node_ids.clone(), type_info, name, packet_in)
     }
 
     pub(super) fn new_client(
         data: &config::Client,
-        factory: &LeafFactory,
+        factory: &LeafImpl,
         all_packet_channels: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
         event_send: Sender<LeafEvent>,
     ) -> NodeInfo {
         let (command_send, command_rcv) = unbounded();
         let packet_send = filter_hashmap_sender(all_packet_channels, &data.connected_drone_ids);
         let (packet_in, packet_rcv) = all_packet_channels[&data.id].clone();
+        let creator = &factory.create;
+        let name = factory.name.clone();
 
-        let mut leaf = factory(data.id, event_send, command_rcv, packet_rcv, packet_send);
+        let mut leaf = creator(data.id, event_send, command_rcv, packet_rcv, packet_send);
 
         thread::spawn(move || {
             leaf.run();
@@ -67,20 +60,22 @@ impl NetworkInitializer {
         let type_info = TypeInfo::Client(LeafInfo {
             command_send_channel: command_send,
         });
-        Self::new_info(data.connected_drone_ids.clone(), type_info, packet_in)
+        NodeInfo::new(data.connected_drone_ids.clone(), type_info, name, packet_in)
     }
 
     pub(super) fn new_server(
         data: &config::Server,
-        factory: &LeafFactory,
+        factory: &LeafImpl,
         all_packet_channels: &HashMap<NodeId, (Sender<Packet>, Receiver<Packet>)>,
         event_send: Sender<LeafEvent>,
     ) -> NodeInfo {
         let (command_send, command_rcv) = unbounded();
         let packet_send = filter_hashmap_sender(all_packet_channels, &data.connected_drone_ids);
         let (packet_in, packet_rcv) = all_packet_channels[&data.id].clone();
+        let creator = &factory.create;
+        let name = factory.name.clone();
 
-        let mut leaf = factory(data.id, event_send, command_rcv, packet_rcv, packet_send);
+        let mut leaf = creator(data.id, event_send, command_rcv, packet_rcv, packet_send);
 
         thread::spawn(move || {
             leaf.run();
@@ -89,7 +84,7 @@ impl NetworkInitializer {
         let type_info = TypeInfo::Server(LeafInfo {
             command_send_channel: command_send,
         });
-        Self::new_info(data.connected_drone_ids.clone(), type_info, packet_in)
+        NodeInfo::new(data.connected_drone_ids.clone(), type_info, name, packet_in)
     }
 }
 

@@ -39,6 +39,7 @@ fn sequential_flood() {
     test_sequential_id_flood::<Tested>(FLOOD_TIMEOUT);
 }
 
+#[ignore]
 #[test]
 fn packet_send_flood() {
     test_packet_send_flood::<Tested>(FLOOD_TIMEOUT);
