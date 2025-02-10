@@ -11,6 +11,7 @@ pub struct NodeInfo {
     pub neighbours: HashSet<NodeId>,
     /// Channel to send packet to this node
     pub packet_in_channel: Sender<Packet>,
+    pub name_impl: String,
     /// Type of the node and its respective properties
     pub type_info: TypeInfo,
 }
@@ -34,4 +35,20 @@ pub struct DroneInfo {
 pub struct LeafInfo {
     /// Channel to send commands to this leaf
     pub command_send_channel: Sender<LeafCommand>,
+}
+
+impl NodeInfo {
+    pub(crate) fn new(
+        neighbours: Vec<NodeId>,
+        type_info: TypeInfo,
+        name_impl: String,
+        packet_in_channel: Sender<Packet>,
+    ) -> NodeInfo {
+        NodeInfo {
+            neighbours: neighbours.into_iter().collect(),
+            packet_in_channel,
+            name_impl,
+            type_info,
+        }
+    }
 }

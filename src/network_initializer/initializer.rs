@@ -1,6 +1,5 @@
+use crate::factory::{DroneImpl, LeafImpl};
 use crate::network::{Network, SimulationChannels};
-use crate::utils::factory::DroneFactory;
-use crate::utils::factory::LeafFactory;
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use std::collections::HashMap;
 use wg_2024::config::Config;
@@ -15,28 +14,27 @@ impl NetworkInitializer {
     #[must_use]
     /// Create a new `NetworkInitializer` and returns it's network.
     pub fn start_simulation_from_config(
-        config: Config,
-        drone_factories: Vec<DroneFactory>,
-        client_factories: Vec<LeafFactory>,
-        server_factories: Vec<LeafFactory>,
+        config: &Config,
+        drone_factories: Vec<DroneImpl>,
+        client_factories: Vec<LeafImpl>,
+        server_factories: Vec<LeafImpl>,
     ) -> Network {
         let ni =
             NetworkInitializer::new(config, drone_factories, client_factories, server_factories);
         ni.network
     }
 
-    #[allow(clippy::needless_pass_by_value)]
     /// Initialize all network components.
     fn new(
-        config: Config,
-        drone_factories: Vec<DroneFactory>,
-        client_factories: Vec<LeafFactory>,
-        server_factories: Vec<LeafFactory>,
+        config: &Config,
+        drone_factories: Vec<DroneImpl>,
+        client_factories: Vec<LeafImpl>,
+        server_factories: Vec<LeafImpl>,
     ) -> Self {
         let mut topology = HashMap::new();
         let (drone_event_sender, drone_event_listener) = unbounded();
         let (leaf_event_sender, leaf_event_listener) = unbounded();
-        let all_packet_channels = create_packet_channels(&config);
+        let all_packet_channels = create_packet_channels(config);
 
         // Initialize all drones
         for (i, node) in config.drone.iter().enumerate() {
@@ -86,6 +84,9 @@ impl NetworkInitializer {
                     drone_event_sender,
                     leaf_event_sender,
                 },
+                drone_factories,
+                client_factories,
+                server_factories,
             },
         }
     }
