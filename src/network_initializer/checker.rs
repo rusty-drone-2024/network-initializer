@@ -6,6 +6,10 @@ use wg_2024::config::Config;
 type MiniGraph = HashMap<NodeId, HashSet<NodeId>>;
 
 impl NetworkInitializer {
+    /// Check that the config given is valid
+    /// # Errors
+    /// In the case of an invalid config, return the string representing
+    /// the reason why it is not valid.
     pub(super) fn check_config(config: &Config) -> Result<(), String> {
         let nodes = Self::get_nodes_from_config(config)?;
 
@@ -54,6 +58,11 @@ impl NetworkInitializer {
         Ok(())
     }
 
+    /// Convert config in a mini graph
+    /// # Return
+    /// A mini graph it can convert it.
+    /// # Errors
+    /// If there are duplicated node ids.
     fn get_nodes_from_config(config: &Config) -> Result<MiniGraph, String> {
         let mut nodes: MiniGraph = HashMap::default();
         for server in &config.server {
@@ -84,6 +93,9 @@ impl NetworkInitializer {
         Ok(nodes)
     }
 
+    /// Check wheater the factories are valid
+    /// # Errors
+    /// In case one of the factories is empty
     pub(super) fn check_factories(
         drones: &[DroneImpl],
         clients: &[LeafImpl],

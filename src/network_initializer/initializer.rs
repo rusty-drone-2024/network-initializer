@@ -1,36 +1,37 @@
 use crate::factory::{DroneImpl, LeafImpl};
 use crate::network::{Network, SimulationChannels};
+use crate::NetworkInitializer;
 use crossbeam_channel::{unbounded, Receiver, Sender};
 use std::collections::HashMap;
 use wg_2024::config::Config;
 use wg_2024::network::NodeId;
 use wg_2024::packet::Packet;
 
-pub struct NetworkInitializer {
-    network: Network,
-}
-
 impl NetworkInitializer {
-    /// Create a new `NetworkInitializer` and returns it's network.
-    pub fn start_simulation_from_config(
-        config: &Config,
-        drone_factories: Vec<DroneImpl>,
-        client_factories: Vec<LeafImpl>,
-        server_factories: Vec<LeafImpl>,
-    ) -> Result<Network, String> {
-        let ni =
-            NetworkInitializer::new(config, drone_factories, client_factories, server_factories)?;
-        Ok(ni.network)
-    }
-
     /// Initialize all network components.
-    fn new(
+    /// # Errors
+    /// - In case any factory is empty
+    /// - In case the topology is invalid
+    pub(super) fn new(
         config: &Config,
         drone_factories: Vec<DroneImpl>,
         client_factories: Vec<LeafImpl>,
         server_factories: Vec<LeafImpl>,
     ) -> Result<Self, String> {
         Self::check_config(config)?;
+        Self::new_unchecked_config(config, drone_factories, client_factories, server_factories)
+    }
+
+    /// Initialize all network components.
+    /// Does not check topology validity.
+    /// # Errors
+    /// - In case any factory is empty
+    pub(super) fn new_unchecked_config(
+        config: &Config,
+        drone_factories: Vec<DroneImpl>,
+        client_factories: Vec<LeafImpl>,
+        server_factories: Vec<LeafImpl>,
+    ) -> Result<Self, String> {
         Self::check_factories(&drone_factories, &client_factories, &server_factories)?;
 
         let mut topology = HashMap::new();
